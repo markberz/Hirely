@@ -247,7 +247,7 @@ function DashboardShell({ profile, setProfile, resume, setResume, summary, setSu
   };
   const addItem = (section: SectionKey) => {
     const templateMap: Record<SectionKey, ResumeItem> = {
-      education: { id: Date.now(), title: '', subtitle: '', year: 'Year', location: 'School Address', details: 'Add your qualifications.' },
+      education: { id: Date.now(), title: '', subtitle: '', year: 'Year', details: 'Add your qualifications.' },
       experience: { id: Date.now() + 1, title: '', subtitle: '', year: 'Year Started - Year Ended', location: '', details: 'Describe your impact.' },
       skills: { id: Date.now() + 2, title: '', subtitle: '', details: 'Mention the tool or competency.' },
       certificates: { id: Date.now() + 3, title: '', subtitle: '', details: 'Any notable achievement.' },
@@ -438,7 +438,7 @@ ${coverLetter}
       doc.setTextColor(accent[0], accent[1], accent[2]);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(20);
-      doc.text(profile.fullName || '', margin + 40, 16);
+      doc.text(profile.fullName || '', margin + 40, 16); // Renders the full name
 
       doc.setTextColor(51, 65, 85);
       doc.setFont('helvetica', 'normal');
@@ -482,18 +482,27 @@ ${coverLetter}
       y = addSectionTitle('Work Experience', y);
       const experienceItems: ResumeItem[] = resume.experience;
       experienceItems.forEach((item: ResumeItem) => {
-        const expHeader = [item.title, item.subtitle].filter(Boolean).join('  —  ');
-        if (y + 15 > pageHeight - 15) {
+        if (y + 20 > pageHeight - 15) { // Ensure enough space for title, location/year, and details
           doc.addPage();
           y = margin;
         }
         doc.setFontSize(10.5);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(0, 0, 0);
-        doc.text(expHeader, margin, y);
+        doc.text([item.title, item.subtitle].filter(Boolean).join(' - '), margin, y); // e.g., "Google - Software Engineer"
+
+        doc.text(item.year || '', pageWidth - margin, y, { align: 'right' }); // Year on the right, bold
+
         y += 5.5;
         doc.setFont('helvetica', 'normal');
-        doc.setTextColor(31, 41, 55);
+
+        if (item.location) {
+          doc.setFontSize(9.5); // Slightly smaller font for secondary info
+          doc.setTextColor(51, 65, 85); // Lighter color for better hierarchy
+          doc.text(item.location, margin, y);
+          y += 4.5;
+        }
+        doc.setTextColor(31, 41, 55); // Reset color for details
 
         const details = item.details || '';
         const detailBlocks = details.split('\n').filter(line => line.trim() !== '');
@@ -520,20 +529,24 @@ ${coverLetter}
       y = addSectionTitle('Education', y);
       const educationItems: ResumeItem[] = resume.education;
       educationItems.forEach((item: ResumeItem) => {
-        if (y + 12 > pageHeight - 15) {
+        if (y + 15 > pageHeight - 15) { // Ensure enough space for course, university/location/year
           doc.addPage();
           y = margin;
         }
-        // Line 1: Course and Year
+        // Line 1: Course (Left) and Year (Right)
         doc.setFontSize(10.5);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(0, 0, 0);
-        doc.text(item.subtitle || '', margin, y);
+        doc.text(item.subtitle || '', margin, y); // Course on the left, bold
+
+        doc.setFont('helvetica', 'bold');
+        doc.text(item.year || '', pageWidth - margin, y, { align: 'right' }); // Year on the right, bold
+
         y += 4.8;
-        // Line 2: University (Normal weight)
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(0, 0, 0);
-        doc.text(item.title || '', margin, y);
+        // Line 2: University / School
+        doc.setTextColor(51, 65, 85); // Lighter color for secondary info
+        doc.setFontSize(9.5); // Slightly smaller font
+        doc.text(item.title || '', margin, y); // Only show University/School
         y += 4.5;
       });
       y = addSectionTitle('Projects', y);
@@ -701,9 +714,9 @@ ${coverLetter}
           <section className="mt-5">
             <article className={`rounded-[24px] border ${mode === 'dark' ? 'border-white/10 bg-[linear-gradient(145deg,#08111f_0%,#020617_100%)]' : 'border-slate-200/60 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)]'} p-6`}>
               <div className="grid gap-4 md:grid-cols-2">
-                {(['Full Name', 'address', 'email', 'phone', 'github', 'linkedin', 'portfolio'] as (keyof Profile)[]).map((field) => (
+                {(['fullName', 'address', 'email', 'phone', 'github', 'linkedin', 'portfolio'] as (keyof Profile)[]).map((field) => (
                   <label key={field} className={`grid gap-1 text-sm ${mode === 'dark' ? 'text-slate-200' : 'text-slate-600 font-medium'}`}>
-                    <span className="capitalize">{field}</span>
+                    <span className="capitalize">{field === 'fullName' ? 'Full Name' : field}</span>
                     <input value={profile[field]} onChange={(e) => setProfile({ ...profile, [field]: e.target.value })} className={`rounded-2xl border ${mode === 'dark' ? 'border-white/10 bg-slate-900/90 text-white' : 'border-slate-200 bg-white text-slate-900'} px-4 py-3 outline-none focus:border-cyan-400`} />
                   </label>
                 ))}
@@ -996,16 +1009,10 @@ function CardSection({ label, items, onAdd, onDelete, onChange, mode }: { label:
 
               {showYearLocation && (
                 <div className="grid gap-4 md:grid-cols-2">
-                  <label className={`block ${label === 'experience' ? 'md:col-span-2' : ''}`}>
+                  <label className={`block ${label === 'experience' || label === 'education' ? 'md:col-span-2' : ''}`}>
                     <span className={`mb-1.5 block text-[11px] uppercase tracking-[0.25em] ${isDark ? 'text-cyan-100/90' : 'text-cyan-700'}`}>{labels.year}</span>
                     <input value={item.year || ''} onChange={(e) => onChange(item.id, { year: e.target.value })} placeholder={labels.year} className={fieldClass} />
                   </label>
-                  {label === 'education' && labels.location && (
-                    <label className="block">
-                      <span className={`mb-1.5 block text-[11px] uppercase tracking-[0.25em] ${isDark ? 'text-cyan-100/90' : 'text-cyan-700'}`}>{labels.location}</span>
-                      <input value={item.location || ''} onChange={(e) => onChange(item.id, { location: e.target.value })} placeholder={labels.location} className={fieldClass} />
-                    </label>
-                  )}
                 </div>
               )}
 
