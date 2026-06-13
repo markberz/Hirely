@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { BrowserRouter, Navigate, NavLink, Route, Routes, useNavigate } from 'react-router-dom';
-import { Download, FileText, Home, LayoutDashboard, LogOut, Menu, MessageCircle, Moon, MoonStar, PlusCircle, Shield, Sparkles, Sun, User, Award, Briefcase, Eye, FileEdit, GraduationCap, Languages, Users, Wrench, PenTool, Copy } from 'lucide-react';
+import { Download, FileText, Home, LayoutDashboard, LogOut, Menu, MessageCircle, Moon, MoonStar, PlusCircle, Shield, Sparkles, Sun, User, Award, Briefcase, Eye, FileEdit, GraduationCap, Languages, Users, Wrench, PenTool, Copy, X } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import logo from './Logo/Logo1.png';
 
@@ -309,28 +309,25 @@ ${coverLetter}
     }
 
     setIsGenerating(true);
-    // Optimized prompt to match the candidate's specific "bridge" narrative (Technical to Admin)
-    const prompt = `
-      Write a professional and highly-tailored cover letter body for the position of ${jobTitle} at ${company}. 
-      The candidate has a background in Computer Engineering/Programming and wants to leverage those skills for administrative efficiency.
+   const prompt = `
+    You are a professional career writer.
 
-      Candidate Name: ${profile.fullName}
-      Experience: ${resume.experience.map((item: ResumeItem) => `${item.title} at ${item.subtitle}: ${item.details}`).join('; ')}
-      Projects: ${resume.projects.map((item: ResumeItem) => `${item.title}: ${item.details}`).join('; ')}
-      Skills: ${resume.skills.map((item: ResumeItem) => item.details).join(', ')}
+      Write ONLY the body of a cover letter for the job: ${jobTitle} at ${company}.
 
-      Structure Instructions:
-      - Paragraph 1: Introduction. State the position applied for and express interest. Connect technical background as a unique strength.
-      - Paragraph 2: Problem Solving. Translate technical achievements (like coding or automation) into workplace value (attention to detail, logic, efficiency).
-      - Paragraph 3: Versatility. List specific tools used (Office, Notion, Cloud Drive, messaging apps) and mention organizational abilities.
-      - Paragraph 4: Closing. Express enthusiasm for supporting the team and daily operations.
+    Candidate:
+      Name: ${profile.fullName}
+      Experience: ${resume.experience.map(i => `${i.title} at ${i.subtitle}: ${i.details}`).join('; ')}
+      Projects: ${resume.projects.map(i => `${i.title}: ${i.details}`).join('; ')}
+      Skills: ${resume.skills.map(i => i.details).join(', ')}
 
-      Constraints:
-      - INDENT each paragraph with 7 spaces at the beginning to match a traditional letter format.
-      - DO NOT include the date, addresses, subject line, salutation (Dear...), or closing (Sincerely) as these are already in the PDF template.
-      - Start directly with the first paragraph of the body.
-      - Use a human, professional, and confident tone.
-    `;
+    Requirements:
+      - 4 paragraphs only
+      - Professional, confident tone
+      - Connect technical background to administrative efficiency
+      - Do NOT include headers, labels, or explanations
+      - Do NOT repeat these instructions
+      - Start immediately with the first paragraph
+`;
 
     const aiText = await generateWithOpenRouter(prompt);
     if (aiText) setCoverLetter(aiText);
@@ -865,12 +862,12 @@ ${coverLetter}
   return (
     <div className={themeClass}>
       <div className="mx-auto flex max-w-7xl p-4 lg:p-6">
-        <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} fixed inset-y-0 left-0 z-30 w-72 border-r ${mode === 'dark' ? 'border-white/10 bg-slate-950/95' : 'border-slate-200/60 bg-white shadow-2xl shadow-slate-200/40'} p-5 transition lg:static lg:translate-x-0 lg:rounded-3xl lg:border ${mode === 'dark' ? 'lg:bg-slate-900/90' : 'lg:bg-white'}`}>
+        <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} fixed inset-y-0 left-0 z-50 w-72 border-r ${mode === 'dark' ? 'border-white/10 bg-slate-950/95' : 'border-slate-200/60 bg-white shadow-2xl shadow-slate-200/40'} p-5 transition lg:static lg:translate-x-0 lg:rounded-3xl lg:border ${mode === 'dark' ? 'lg:bg-slate-900/90' : 'lg:bg-white'}`}>
           <div className="flex items-center justify-between lg:block">
-            <div className="flex w-full items-center justify-center py-2">
+            <div className="flex items-center justify-center py-2 flex-1">
               <img src={logo} alt="Logo" className="h-24 w-auto object-contain" />
             </div>
-            <button onClick={() => setSidebarOpen(false)} className="rounded-xl border border-white/10 bg-white/5 p-2 text-slate-100 lg:hidden"><Menu /></button>
+            <button onClick={() => setSidebarOpen(false)} className="rounded-xl border border-white/10 bg-white/5 p-2 text-slate-400 hover:text-white lg:hidden"><X size={24} /></button>
           </div>
           <nav className="mt-8 space-y-1 text-sm">
             {[
