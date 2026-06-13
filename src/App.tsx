@@ -300,11 +300,11 @@ ${coverLetter}
 
   const generateCoverLetter = async () => {
     if (!import.meta.env.VITE_OPENROUTER_API_KEY) {
-      alert("AI Cover Letter generation requires an API key in your .env file.");
+      alert("AI Cover Letter generation requires an API key");
       return;
     }
     if (!jobTitle || !company) {
-      alert("Please enter the Job Title and Company Name first so the AI can tailor the letter.");
+      alert("Please input the Job Title and Company Name first so the AI can generate the cover letter.");
       return;
     }
 
@@ -828,7 +828,7 @@ ${coverLetter}
           <section className="mt-5">
             <article className={`rounded-[24px] border ${mode === 'dark' ? 'border-white/10 bg-[linear-gradient(145deg,#08111f_0%,#020617_100%)]' : 'border-slate-200 bg-white'} p-6 shadow-[0_18px_40px_rgba(15,23,42,0.12)]`}>
               <div className="w-full">
-                <div className={`rounded-[24px] border ${mode === 'dark' ? 'border-white/10 bg-slate-950/95' : 'border-slate-200 bg-slate-50'} p-5 shadow-inner`}>
+                <div className={`rounded-[24px] border ${mode === 'dark' ? 'border-white/10 bg-slate-950/95' : 'border-slate-200 bg-slate-50'} p-5 shadow-inner overflow-x-auto`}>
                   <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-4">
                     <div>
                       <h4 className={`text-lg font-semibold ${mode === 'dark' ? 'text-white' : 'text-slate-900'}`}>Live PDF Preview</h4>
@@ -840,8 +840,8 @@ ${coverLetter}
                   {pdfPreviewUrl ? (
                     <iframe
                       title="Resume PDF preview"
-                      src={pdfPreviewUrl}
-                      className="mt-4 h-[640px] w-full rounded-3xl border border-white/10 bg-white"
+                      src={pdfPreviewUrl} // The iframe itself
+                      className="mt-4 h-[640px] w-full max-w-full rounded-3xl border border-white/10 bg-white" // Added max-w-full
                     />
                   ) : (
                     <div className={`mt-4 rounded-3xl border border-dashed p-6 text-sm ${mode === 'dark' ? 'border-white/10 bg-white/5 text-slate-300' : 'border-slate-200 bg-white text-slate-500'}`}>
@@ -902,7 +902,7 @@ ${coverLetter}
             <button onClick={() => setSidebarOpen(true)} className={`rounded-xl border p-2 ${mode === 'dark' ? 'border-white/10 bg-white/5 text-slate-100' : 'border-slate-200 bg-slate-100 text-slate-700'}`}><Menu size={18} /></button>
           </div>
 
-          <div className={`mt-3 rounded-[28px] border ${mode === 'dark' ? 'border-white/10 bg-slate-950/85 shadow-[0_24px_60px_rgba(2,6,23,0.45)]' : 'border-slate-200/70 bg-white/80 shadow-[0_20px_50px_rgba(0,0,0,0.04)]'} p-5 backdrop-blur-xl`}>
+          <div className={`mt-3 rounded-[28px] border ${mode === 'dark' ? 'border-white/10 bg-slate-950/85 shadow-[0_24px_60px_rgba(2,6,23,0.45)]' : 'border-slate-200/70 bg-white/80 shadow-[0_20px_50px_rgba(0,0,0,0.04)]'} p-5 backdrop-blur-xl lg:h-[820px] overflow-y-auto`}>
             <div className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-4">
               <div>
                 <h3 className={`text-2xl font-semibold ${mode === 'dark' ? 'text-white' : 'text-slate-900'}`}>{sectionMeta[activeSection as keyof typeof sectionMeta].title}</h3>
