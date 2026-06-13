@@ -895,7 +895,7 @@ ${coverLetter}
               </button>
             ))}
           </nav>
-          <button onClick={() => { setAuth({ user: '', loggedIn: false }); navigate('/'); }} className={`mt-8 flex w-full items-center justify-center gap-2 rounded-2xl border ${mode === 'dark' ? 'border-white/10 bg-white/5 text-slate-100' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900'} py-3`}><LogOut size={16} /></button>
+          <button onClick={() => { setAuth({ user: '', loggedIn: false }); navigate('/'); }} className={`mt-8 flex h-12 w-12 mx-auto items-center justify-center rounded-2xl border ${mode === 'dark' ? 'border-white/10 bg-white/5 text-slate-100' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-950'}`} title="Logout"><LogOut size={20} /></button>
         </aside>
         <main className="flex-1 lg:ml-6">
           <div className="flex items-center justify-start pt-1 lg:hidden">
