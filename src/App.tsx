@@ -549,46 +549,48 @@ ${coverLetter}
         doc.text(item.title || '', margin, y); // Only show University/School
         y += 4.5;
       });
-      y = addSectionTitle('Projects', y);
-      resume.projects.forEach((item: ResumeItem) => {
-        if (y + 20 > pageHeight - 15) {
-          doc.addPage();
-          y = margin;
-        }
-        doc.setFontSize(10.5);
-        doc.setFont('helvetica', 'bold');
-        doc.setTextColor(0, 0, 0);
-        doc.text(item.title || '', margin, y);
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(0, 0, 0);
-        y += 4.8;
-        doc.text(item.subtitle || '', margin, y);
-        y += 4.8;
-        
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(31, 41, 55);
-
-        const details = item.details || '';
-        const detailBlocks = details.split('\n').filter(line => line.trim() !== '');
-        
-        detailBlocks.forEach(block => {
-          const cleanLine = block.trim().replace(/^[•\-\*]\s*/, "");
-          const bullet = "• ";
-          doc.setFontSize(10.5);
-          const bulletWidth = doc.getTextWidth(bullet);
-          const wrappedLines = doc.splitTextToSize(cleanLine, contentWidth - 10 - bulletWidth);
-
-          if (y + (wrappedLines.length * 5) > pageHeight - 15) {
+      if (resume.projects && resume.projects.length > 0) {
+        y = addSectionTitle('Projects', y);
+        resume.projects.forEach((item: ResumeItem) => {
+          if (y + 20 > pageHeight - 15) {
             doc.addPage();
             y = margin;
           }
+          doc.setFontSize(10.5);
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(0, 0, 0);
+          doc.text(item.title || '', margin, y);
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(0, 0, 0);
+          y += 4.8;
+          doc.text(item.subtitle || '', margin, y);
+          y += 4.8;
+          
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(31, 41, 55);
 
-          doc.text(bullet, margin + 4, y);
-          doc.text(wrappedLines, margin + 4 + bulletWidth, y, { align: 'justify', maxWidth: contentWidth - 10 - bulletWidth });
-          y += (wrappedLines.length * 5.0) + 1.2;
+          const details = item.details || '';
+          const detailBlocks = details.split('\n').filter(line => line.trim() !== '');
+          
+          detailBlocks.forEach(block => {
+            const cleanLine = block.trim().replace(/^[•\-\*]\s*/, "");
+            const bullet = "• ";
+            doc.setFontSize(10.5);
+            const bulletWidth = doc.getTextWidth(bullet);
+            const wrappedLines = doc.splitTextToSize(cleanLine, contentWidth - 10 - bulletWidth);
+
+            if (y + (wrappedLines.length * 5) > pageHeight - 15) {
+              doc.addPage();
+              y = margin;
+            }
+
+            doc.text(bullet, margin + 4, y);
+            doc.text(wrappedLines, margin + 4 + bulletWidth, y, { align: 'justify', maxWidth: contentWidth - 10 - bulletWidth });
+            y += (wrappedLines.length * 5.0) + 1.2;
+          });
+          y += 3;
         });
-        y += 3;
-      });
+      }
 
       y = addSectionTitle('Additional Information', y);
 
@@ -626,10 +628,14 @@ ${coverLetter}
       if (y + 15 > pageHeight - 15) { doc.addPage(); y = margin; }
       y = renderLabelValue('Languages', languagesText, y);
 
-      doc.setFontSize(10.5);
-      const certText = resume.certificates.map((item: ResumeItem) => item.title).join(', ') || 'None specified';
-      if (y + 15 > pageHeight - 15) { doc.addPage(); y = margin; }
-      y = renderLabelValue('Certifications & Training', certText, y);
+      if (resume.certificates && resume.certificates.length > 0) {
+        const certText = resume.certificates.map((item: ResumeItem) => item.title).filter(Boolean).join(', ');
+        if (certText) {
+          doc.setFontSize(10.5);
+          if (y + 15 > pageHeight - 15) { doc.addPage(); y = margin; }
+          y = renderLabelValue('Certifications & Training', certText, y);
+        }
+      }
 
       if (resume.references && resume.references.length > 0) {
         y = addSectionTitle('References', y);
