@@ -1,8 +1,9 @@
+/// <reference types="vite/client" />
 import { useEffect, useMemo, useState } from 'react';
 import { BrowserRouter, Navigate, NavLink, Route, Routes, useNavigate } from 'react-router-dom';
 import { Download, FileText, Home, LayoutDashboard, LogOut, Menu, MessageCircle, Moon, MoonStar, PlusCircle, Shield, Sparkles, Sun, User, Award, Briefcase, Eye, FileEdit, GraduationCap, Languages, Users, Wrench, PenTool, Copy } from 'lucide-react';
 import { jsPDF } from 'jspdf';
-import logo from './Logo/Logo1.png';
+import logo from './src/Logo/Logo1.png';
 
 type SectionKey = 'education' | 'experience' | 'projects' | 'skills' | 'certificates' | 'references' | 'languages';
 
