@@ -36,7 +36,8 @@ This reduces manual effort while improving the quality and relevance of job appl
 
 - **Frontend:** React.js  
 - **Backend:** Node.js  
-- **Deployment:** Vercel  
+- **Deployment:** Vercel
+- **API Integration: ** OpenRouter
 - **Version Control:** Git & GitHub  
 
 ---
