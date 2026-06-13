@@ -40,6 +40,4 @@ This reduces manual effort while improving the quality and relevance of job appl
 - **Version Control:** Git & GitHub  
 
 ---
-# Install backend dependencies
-cd ../server
-npm install
+
